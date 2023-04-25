@@ -1,0 +1,22 @@
+const int BUZZER = 11;
+const int button[] = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+const int buttonNotes[] = {329, 392, 440, 494, 523, 587, 659, 698, 783};
+
+void setup() {
+  for (int n = 0; n < 9; n++) {
+    pinMode(button[n], INPUT);
+  }
+}
+
+void loop() {
+  for (int n = 0; n < 9; n++) {
+    if (digitalRead(button[n]) == HIGH) {
+      tone(BUZZER, buttonNotes[n]);
+      while (digitalRead(button[n]) == HIGH) {
+
+        delay(10); // 버튼이 눌린 동안 계속해서 tone() 함수를 호출합니다.
+      }
+      noTone(BUZZER); // 버튼에서 손을 떼면 더이상 음이 나오지 않도록 합니다.
+    }
+  }
+}
