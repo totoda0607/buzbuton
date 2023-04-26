@@ -1,0 +1,45 @@
+const int BUZZER = 11;
+const int button[] = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+const int buttonNotes1[] = {329, 391, 440, 493, 523, 587, 659, 698, 783};
+const int buttonNotes2[] = {261, 293, 329, 349, 391, 440, 493, 523, 587};
+const int LED1 = 12;
+const int LED2 = 13;
+int currentNotes = 1;
+
+void setup() {
+  for (int n = 0; n < 9; n++) {
+    pinMode(button[n], INPUT);
+  }
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  Serial.begin(9600); // 시리얼 통신 초기화
+}
+
+void loop() {
+  if (Serial.available() > 0) { // 입력값이 있는지 확인
+    char input = Serial.read(); // 입력값 읽어오기
+    if (input == '1') { // 입력값 비교
+      currentNotes = 1; // 현재 노트 값 변경
+    } else if (input == '2') {
+      currentNotes = 2;
+    }
+  }
+  
+  for (int n = 0; n < 9; n++) {
+    if (digitalRead(button[n]) == HIGH) {
+      if (currentNotes == 1) {
+        tone(BUZZER, buttonNotes1[n]);
+        digitalWrite(LED1, HIGH);
+      } else {
+        tone(BUZZER, buttonNotes2[n]);
+        digitalWrite(LED2, HIGH);
+      }
+      while (digitalRead(button[n]) == HIGH) {
+        delay(10);
+      }
+      noTone(BUZZER);
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, LOW);
+    }
+  }
+}
